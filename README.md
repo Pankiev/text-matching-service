@@ -14,33 +14,32 @@ availability and horizontal scalability/with the highest throughput. I assumed t
    the system should be still available (assuming rest of the instances can handle the load)
 3. With database scaling
    ![3 - with database scaling](possibleArchitectures/3-with-database-scaling.png)<br>
-   We have made our storage scalable and available by choosing Cassandra. Having current requirements I think easy
-   to scale key/value store is a good choice. If we need more throughput or higher availability all we need it is adding more nodes
-   to the cluster and potentially reconfigure it. Cassandra is by default AP (Available Partition-tolerant) and can be reconfigured  
-   for CP according to documentation. If the text-matching service would have to be enriched in the future by adding new requirements then I would
-   reconsider this choice and choose the best solution.
+   We have made our storage scalable and available by choosing Cassandra. Having current requirements I think easy to scale key/value store is a good choice. If
+   we need more throughput or higher availability all we need it is to add more nodes to the cluster and potentially reconfigure it. Cassandra is by default
+   AP (Available Partition-tolerant) and can be reconfigured for CP according to documentation. If the text-matching service would have to be enriched in the
+   future by adding new requirements then I would reconsider this choice and choose the best solution.
     1. Using web sockets
        ![3.1 - with websockets](possibleArchitectures/3.1-with-web-sockets.png)<br/>
        Adding websockets will make our text-matching service more efficient (less network traffic and CPU consumption) and make the service more
        responsive at the cost of additional RAM consumed by file descriptors. From now on we require load balancer(s) to use consistent hashing to
-       minimize number of active connections when number of available text-matching-service instances change
+       minimize number of active connections when number of available text-matching-service instances change.
     2. Using message brokers
        ![3.2 - with message brokers](possibleArchitectures/3.2-with-message-brokers.png)<br/>
-       Instead of adding web sockets to architecture described in point 3. we could use message brokers. Instead of executing the task right away we
-       can send a message to message broker. Our text-matching service will subscribe to message broker and execute tasks upon receiving the messages.
+       Instead of adding web sockets to architecture described in point 3. we could use message brokers. We rather don't task right away, but we
+       can send messages to message broker. Our text-matching service will subscribe to message broker and execute tasks upon receiving the messages.
        This improves availability in case of sudden traffic load increase and decreases chance of unsuccessful requests happening. Message brokers
        often implement mechanisms that allows us to limit traffic more reliably and issue retries in case of unsuccessful processing. The disadvantage of this
        solution is increased processing time (looking from user's point of view) compared to both 3. and 3.i architectures.
     3. Using message brokers with two microservices
        ![3.3 - message brokers and microservices](possibleArchitectures/3.3-message-brokers-microservices.png)<br/>
-       Additionally to point 3.ii we could also separate the service into two microservices. Text-matching bridge would receive users' requests send
+       Additionally to point 3.ii we could also separate the service into two microservices. Text-matching bridge would receive users' requests and then send
        messages to computation request topic. Text-matching service would subscribe to the topic mentioned and emit messages to computation progress topic.
        Text-matching bridge would then receive messages and persist the results. This would allow to scale both services independently and in case every
        instance of
        one microservice does not work the other would be still available and therefore part of the system would still work.
 4. Combined approach
    ![4 - combined approach](possibleArchitectures/4-combined-approach.png)<br/>
-   Combining techniques described in point 3.i and 3.iii with some modifications we end up with architecture shown above. Here we process tasks right away and
+   By combining techniques described in point 3.i and 3.iii with some modifications we end up with architecture shown above. Here we process tasks right away and
    use web sockets as our main method of communication but when the service load is high, and we shouldn't accept any more computation requests we use
    processing based on message brokers as a backup plan. A separate set of service instances is responsible for processing asynchronous messages and retrieving
    results persisted in database. Note that the service is not separated into two microservices because we will have to keep computation logic in every instance
