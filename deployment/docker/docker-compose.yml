@@ -6,7 +6,10 @@ services:
     hostname: node1
     restart: always
     environment:
+      CASSANDRA_SEEDS: node1
       CASSANDRA_CLUSTER_NAME: "Text matching app cluster"
+      CASSANDRA_DC: datacenter1
+      CASSANDRA_ENDPOINT_SNITCH: GossipingPropertyFileSnitch
     ports:
       - "9042:9042"
     networks:
@@ -19,8 +22,10 @@ services:
     hostname: node2
     restart: always
     environment:
-      CASSANDRA_SEEDS: cassandra-text-matching-seed
+      CASSANDRA_SEEDS: node1
       CASSANDRA_CLUSTER_NAME: "Text matching app cluster"
+      CASSANDRA_DC: datacenter1
+      CASSANDRA_ENDPOINT_SNITCH: GossipingPropertyFileSnitch
     ports:
       - "9043:9042"
     networks:
