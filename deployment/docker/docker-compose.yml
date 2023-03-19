@@ -1,0 +1,39 @@
+version: "3.9"
+services:
+  cassandra-text-matching-seed:
+    container_name: cassandra-text-matching-seed
+    image: cassandra:4.1.0
+    hostname: node1
+    restart: always
+    environment:
+      CASSANDRA_CLUSTER_NAME: "Text matching app cluster"
+    ports:
+      - "9042:9042"
+    networks:
+      cassandra-network:
+        ipv4_address: 172.30.0.2
+
+  cassandra-text-matching-node:
+    container_name: cassandra-text-matching-node
+    image: cassandra:4.1.0
+    hostname: node2
+    restart: always
+    environment:
+      CASSANDRA_SEEDS: cassandra-text-matching-seed
+      CASSANDRA_CLUSTER_NAME: "Text matching app cluster"
+    ports:
+      - "9043:9042"
+    networks:
+      cassandra-network:
+        ipv4_address: 172.30.0.3
+    depends_on:
+      - cassandra-text-matching-seed
+
+networks:
+  cassandra-network:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.30.0.0/16
+
+
