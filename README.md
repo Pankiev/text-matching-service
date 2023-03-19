@@ -61,5 +61,5 @@ availability and horizontal scalability/with the highest throughput. I assumed t
 ## Chosen architecture
 
 Because of limited requirements regarding throughput and availability I did not decide to implement a service compatible with most complex architecture. In this
-project I chose architecture described in 3.ii. In my opinion it's good enough to start with for most real-world use cases and since it does not include
+project I chose architecture described in 3.ii. It's compatible with task description and in my opinion it's good enough to start with for most real-world use cases and since it does not include
 websockets which could be sometimes incompatible with currently existing company's infrastructure, deployment should be easier.    
