@@ -18,14 +18,14 @@ public class TextMatchingController {
 
     private final TextMatchingService textMatchingService;
 
-    @GetMapping(value = {"", "/"}, produces = {MediaType.APPLICATION_JSON_VALUE})
+    @GetMapping(value = {"", "/"}, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<TextMatchingTaskRestDto> getMatchingTasksInfo() {
         return textMatchingService.findTextMatchingTasks().stream()
                 .map(this::toTextMatchingTaskRestDto)
                 .toList();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TextMatchingTaskRestDto> getMatchingTaskInfo(@PathVariable("id") UUID id) {
         return textMatchingService.findTextMatchingTask(id)
                 .map(this::toTextMatchingTaskRestDto)
@@ -38,7 +38,7 @@ public class TextMatchingController {
                 textMatchingTask.inputText(), textMatchingTask.pattern(), textMatchingTask.taskProgress());
     }
 
-    @PostMapping({"", "/"})
+    @PostMapping(value = {"", "/"}, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.ACCEPTED)
     public TextMatchingTaskRestDto startMatchingTask(@RequestBody StartTextMatchingTaskRestDto startTextMatchingTaskRestDto) {
         TextMatchingTask textMatchingTask = textMatchingService.startTextMatchingTask(
