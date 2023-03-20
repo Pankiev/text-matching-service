@@ -1,44 +1,99 @@
 version: "3.9"
 services:
+
+  nginx-load-balancer:
+    container_name: nginx-load-balancer
+    image: nginx:1.23.3
+    restart: always
+    volumes:
+      - ./nginx/:/etc/nginx/conf.d/
+    ports:
+      - "80:80"
+
+  text-matching-service-1:
+    container_name: text-matching-service-1
+    image: text-matching-service:latest
+    hostname: text-matching-service-1
+    depends_on:
+      - rabbitmq-1
+      - cassandra-text-matching-seed
+
+  text-matching-service-2:
+    container_name: text-matching-service-2
+    image: text-matching-service:latest
+    hostname: text-matching-service-1
+    depends_on:
+      - rabbitmq-1
+      - cassandra-text-matching-seed
+
   cassandra-text-matching-seed:
     container_name: cassandra-text-matching-seed
     image: cassandra:4.1.0
-    hostname: node1
+    hostname: cassandra-node1
     restart: always
     environment:
-      CASSANDRA_SEEDS: node1
+      CASSANDRA_SEEDS: cassandra-node1
       CASSANDRA_CLUSTER_NAME: "Text matching app cluster"
       CASSANDRA_DC: datacenter1
       CASSANDRA_ENDPOINT_SNITCH: GossipingPropertyFileSnitch
-    ports:
-      - "9042:9042"
-    networks:
-      cassandra-network:
-        ipv4_address: 172.30.0.2
-
+      HEAP_NEWSIZE: 1536M
+      MAX_HEAP_SIZE: 1536M
+    expose:
+      - 9042
+    volumes:
+      - ./cassandra1:/var/lib/cassandra
   cassandra-text-matching-node:
     container_name: cassandra-text-matching-node
     image: cassandra:4.1.0
-    hostname: node2
+    hostname: cassandra-node2
     restart: always
     environment:
-      CASSANDRA_SEEDS: node1
+      CASSANDRA_SEEDS: cassandra-node1
       CASSANDRA_CLUSTER_NAME: "Text matching app cluster"
       CASSANDRA_DC: datacenter1
       CASSANDRA_ENDPOINT_SNITCH: GossipingPropertyFileSnitch
-    ports:
-      - "9043:9042"
-    networks:
-      cassandra-network:
-        ipv4_address: 172.30.0.3
+      HEAP_NEWSIZE: 1536M
+      MAX_HEAP_SIZE: 1536M
+    expose:
+      - 9042
+    volumes:
+      - ./cassandra2:/var/lib/cassandra
     depends_on:
       - cassandra-text-matching-seed
+  init-cassandra-keyspace:
+    image: cassandra:4.1.0
+    depends_on:
+      - cassandra-text-matching-seed
+    restart: "no"
+    entrypoint: [ "/init_keyspace.sh" ]
+    volumes:
+      - ./cassandra/init_keyspace.sh:/init_keyspace.sh
 
-networks:
-  cassandra-network:
-    ipam:
-      driver: default
-      config:
-        - subnet: 172.30.0.0/16
+  rabbitmq-1:
+    container_name: "rabbitmq-1"
+    image: rabbitmq:3.11.10-management-alpine
+    hostname: rabbitmq-1
+    environment:
+      - RABBITMQ_DEFAULT_USER=rabbitMqUser
+      - RABBITMQ_DEFAULT_PASS=rabbitMqPassword
+      - RABBITMQ_ERLANG_COOKIE=rabbit-mq-cluster
+      - RABBITMQ_CONFIG_FILE=/config/rabbitmq
+    expose:
+      - 5672
+    volumes:
+      - ./rabbitmq/:/config/
+  rabbitmq-2:
+    container_name: "rabbitmq-2"
+    image: rabbitmq:3.11.10-management-alpine
+    hostname: rabbitmq-2
+    environment:
+      - RABBITMQ_CONFIG_FILE=/config/rabbitmq
+      - RABBITMQ_ERLANG_COOKIE=rabbit-mq-cluster
+    expose:
+      - 5672
+    depends_on:
+      - rabbitmq-1
+    volumes:
+      - ./rabbitmq/:/config/
 
 

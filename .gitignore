@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Cassandra volumes
+deployment/docker/cassandra1
+deployment/docker/cassandra2

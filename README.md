@@ -63,3 +63,14 @@ availability and horizontal scalability/with the highest throughput. I assumed t
 Because of limited requirements regarding throughput and availability I did not decide to implement a service compatible with most complex architecture. In this
 project I chose architecture described in 3.ii. It's compatible with task description and in my opinion it's good enough to start with for most real-world use cases and since it does not include
 websockets which could be sometimes incompatible with currently existing company's infrastructure, deployment should be easier.    
+
+# Deploying
+Deploying on production environment would require further configuration. 
+
+Make sure you have enough RAM space available for docker containers. Run script `deployments/deploy-local-cluster.sh` in order to deploy:
+- A nginx proxy/load balancer
+- Two instances of text-matching service
+- A cluster of cassandra (two nodes)
+- A cluster of rabbitmq (two instances)
+
+Application will be available under port 80.
