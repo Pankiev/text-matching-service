@@ -4,9 +4,11 @@ import com.cdq.textmatching.domain.TextMatchingService;
 import com.cdq.textmatching.domain.TextMatchingTask;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -15,6 +17,13 @@ import java.util.UUID;
 public class TextMatchingController {
 
     private final TextMatchingService textMatchingService;
+
+    @GetMapping(value = {"", "/"}, produces = {MediaType.APPLICATION_JSON_VALUE})
+    public List<TextMatchingTaskRestDto> getMatchingTasksInfo() {
+        return textMatchingService.findTextMatchingTasks().stream()
+                .map(this::toTextMatchingTaskRestDto)
+                .toList();
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<TextMatchingTaskRestDto> getMatchingTaskInfo(@PathVariable("id") UUID id) {
@@ -29,10 +38,10 @@ public class TextMatchingController {
                 textMatchingTask.inputText(), textMatchingTask.pattern(), textMatchingTask.taskProgress());
     }
 
-    @PostMapping("/start-new-task")
+    @PostMapping({"", "/"})
     @ResponseStatus(HttpStatus.ACCEPTED)
     public TextMatchingTaskRestDto startMatchingTask(@RequestBody StartTextMatchingTaskRestDto startTextMatchingTaskRestDto) {
-        TextMatchingTask textMatchingTask = textMatchingService.startMatchingTask(
+        TextMatchingTask textMatchingTask = textMatchingService.startTextMatchingTask(
                 startTextMatchingTaskRestDto.inputText(), startTextMatchingTaskRestDto.pattern());
         return toTextMatchingTaskRestDto(textMatchingTask);
     }

@@ -6,8 +6,11 @@ import com.cdq.textmatching.domain.TextMatchingTaskStatus;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @AllArgsConstructor
 @Repository
@@ -15,10 +18,12 @@ public class CassandraTextMatchingTaskRepository implements TextMatchingTaskRepo
 
     private final SpringDataCassandraTextMatchingTaskRepository springDataCassandraTextMatchingTaskRepository;
 
+
     @Override
-    public Optional<TextMatchingTask> findById(UUID id) {
-        return springDataCassandraTextMatchingTaskRepository.findById(id)
-                .map(this::toTextMatchingTask);
+    public List<TextMatchingTask> findAll() {
+        return StreamSupport.stream(springDataCassandraTextMatchingTaskRepository.findAll().spliterator(), false)
+                .map(this::toTextMatchingTask)
+                .toList();
     }
 
     private TextMatchingTask toTextMatchingTask(CassandraTextMatchingTask cassandraTextMatchingTask) {
@@ -29,6 +34,12 @@ public class CassandraTextMatchingTaskRepository implements TextMatchingTaskRepo
                 cassandraTextMatchingTask.getPattern(),
                 cassandraTextMatchingTask.getProgress()
         );
+    }
+
+    @Override
+    public Optional<TextMatchingTask> findById(UUID id) {
+        return springDataCassandraTextMatchingTaskRepository.findById(id)
+                .map(this::toTextMatchingTask);
     }
 
     @Override
