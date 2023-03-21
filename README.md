@@ -87,7 +87,7 @@ the beginning.
 
 ## Chosen architecture
 
-Because of limited requirements regarding throughput and availability I did not decide to implement a service compatible
+Because of limited information about requirements regarding throughput and availability I did not decide to implement a service compatible
 with most complex architecture. In this
 project I chose architecture described in 3.ii. It's compatible with task description and in my opinion it's good enough
 to start with for most real-world use cases and since it does not include
@@ -101,8 +101,9 @@ securely, adjust resources to our needs, configure cassandra cluster, configure 
 If we want to dynamically scale system horizontally based on current demand it would be better to use kubernetes instead
 of docker-compose
 
-Make sure the 80 port is opened, you have running docker engine and enough RAM space (available for docker containers. Run script `deployments/deploy-local-cluster.sh` in
-order to deploy:
+Make sure the 80 port is opened, you have running docker engine and enough RAM space (about 5GB, mostly consumed by cassandra nodes) available for docker
+containers.
+Run script `deployments/deploy-local-cluster.sh` in order to deploy:
 
 - A nginx proxy/load balancer
 - Two instances of text-matching service
@@ -122,11 +123,9 @@ There are three endpoints implemented:
 For exactly how to invoke the endpoints please refer to swagger documentation
 under http://localhost/swagger-ui/index.html after deploying the application.
 
-## Additional notes for reviewer
+## Note for a reviewer
 
-- In real world we should introduce a mechanism that would resume task processing in case a process that is calculating
-  particular task goes down for some reason.
-- Based on the assumption that each step of the text processing algorithm is "heavy" (currently simulated by
-  Thread.sleep()) we can update progress in the database directly each time without any conditions. If it was not the
-  case we should persist progress at the start of computation, then periodically and then finally at the end. Possibly
-  we could think of centralised cache if even better performance is required. 
+- I truly apologize for not taking care of integration tests. This task turned out to be way more time-consuming than I
+  anticipated. I spent most of the time on architectures list, deciding on chosen technologies and deploying local
+  cluster, I hope it will make up for this incompleteness 😅 Usually I write tests first, but I find that technique
+  inefficient for super-fresh projects. If that would be deciding I could write missing tests on weekend.

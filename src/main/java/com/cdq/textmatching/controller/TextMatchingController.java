@@ -25,7 +25,7 @@ class TextMatchingController {
                 .toList();
     }
 
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = {"/{id}", "/{id}/"}, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<TextMatchingTaskResultRestDto> getMatchingTaskInfo(@PathVariable("id") UUID id) {
         return textMatchingService.findTextMatchingTaskResult(id)
                 .map(TextMatchingTaskResultRestDto::of)

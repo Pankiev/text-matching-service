@@ -1,9 +1,6 @@
 package com.cdq.textmatching.configuration;
 
-import com.cdq.textmatching.domain.TextMatchingService;
-import com.cdq.textmatching.domain.TextMatchingTaskMessageHandler;
-import com.cdq.textmatching.domain.TextMatchingTaskMessagePublisher;
-import com.cdq.textmatching.domain.TextMatchingTaskRepository;
+import com.cdq.textmatching.domain.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -21,7 +18,18 @@ public class DomainLayerBeansConfiguration {
     }
 
     @Bean
-    public TextMatchingTaskMessageHandler textMatchingTaskMessageHandler(TextMatchingTaskRepository textMatchingTaskRepository) {
-        return new TextMatchingTaskMessageHandler(textMatchingTaskRepository);
+    public TextMatchingTaskMessageHandler textMatchingTaskMessageHandler(
+            TextMatchingTaskRepository textMatchingTaskRepository, TextMatchingTaskProcessor textMatchingTaskProcessor) {
+        return new TextMatchingTaskMessageHandler(textMatchingTaskRepository, textMatchingTaskProcessor);
+    }
+
+    @Bean
+    public ArtificialLoadSimulator artificialLoadSimulator() {
+        return new ThreadSleepArtificialLoadSimulator();
+    }
+
+    @Bean
+    public TextMatchingTaskProcessor textMatchingTaskProcessor(ArtificialLoadSimulator artificialLoadSimulator) {
+        return new TextMatchingTaskProcessor(artificialLoadSimulator);
     }
 }
