@@ -3,6 +3,7 @@ package com.cdq.textmatching.controller;
 import com.cdq.textmatching.domain.TextMatchingService;
 import com.cdq.textmatching.domain.TextMatchingTask;
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping(("/text-matching"))
 @AllArgsConstructor
+@Log4j2
 class TextMatchingController {
 
     private final TextMatchingService textMatchingService;
@@ -39,5 +41,11 @@ class TextMatchingController {
         TextMatchingTask textMatchingTask = textMatchingService.startTextMatchingTask(
                 startTextMatchingTaskRestDto.inputText(), startTextMatchingTaskRestDto.pattern());
         return TextMatchingTaskRestDto.of(textMatchingTask);
+    }
+
+    @ExceptionHandler
+    ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException e) {
+        log.warn("Invalid input parameters provided: {}", e.getMessage());
+        return ResponseEntity.unprocessableEntity().body(new ErrorResponse(e.getMessage()));
     }
 }

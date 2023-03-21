@@ -45,4 +45,8 @@ public class TextMatchingTask {
     public TextMatchingTask newCompletedTask(TextMatch bestMatch) {
         return new TextMatchingTask(id, FINISHED, inputText, pattern, inputText.length() - 1, bestMatch);
     }
+
+    public TextMatchingTask newFailedTask() {
+        return new TextMatchingTask(id, ERROR, inputText, pattern, lastCheckedPosition, bestMatch);
+    }
 }

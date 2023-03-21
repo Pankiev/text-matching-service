@@ -18,7 +18,16 @@ public class TextMatchingTaskMessageHandler {
         //  Thread.sleep()) we can update progress in the database directly each time without any conditions. If it was not the
         //  case we should persist progress at the start of computation, then periodically and then finally at the end. Possibly
         //  we could think of centralised cache if even better performance is required.
-        textMatchingTaskProcessor.process(taskToProcess, textMatchingTaskRepository::save);
+        tryProcessing(taskToProcess);
+    }
+
+    private void tryProcessing(TextMatchingTask taskToProcess) {
+        try {
+            textMatchingTaskProcessor.process(taskToProcess, textMatchingTaskRepository::save);
+        } catch (Exception e) {
+            log.error("Error while processing task with id {}", taskToProcess, e);
+            textMatchingTaskRepository.save(taskToProcess.newFailedTask());
+        }
     }
 
     private TextMatchingTask provideTaskToProcess(TextMatchingTaskMessage textMatchingTaskMessage) {

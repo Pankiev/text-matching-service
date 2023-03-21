@@ -16,9 +16,17 @@ public class TextMatchingService {
     private final TextMatchingTaskMessagePublisher textMatchingTaskMessagePublisher;
 
     public TextMatchingTask startTextMatchingTask(String inputText, String pattern) {
+        validateNotEmpty(inputText, "Input text");
+        validateNotEmpty(inputText, "Pattern");
         TextMatchingTask textMatchingTask = TextMatchingTask.newTaskToProcess(inputText, pattern);
         textMatchingTaskMessagePublisher.publish(TextMatchingTaskMessage.from(textMatchingTask));
         return textMatchingTaskRepository.save(textMatchingTask);
+    }
+
+    private static void validateNotEmpty(String value, String fieldName) {
+        if (value == null || value.isEmpty()) {
+            throw new IllegalArgumentException(fieldName + " must not be empty!");
+        }
     }
 
     public Optional<TextMatchingTaskResult> findTextMatchingTaskResult(UUID id) {

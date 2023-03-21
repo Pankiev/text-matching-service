@@ -125,7 +125,7 @@ under http://localhost/swagger-ui/index.html after deploying the application.
 
 ## Note for a reviewer
 
-- I truly apologize for not taking care of integration tests. This task turned out to be way more time-consuming than I
+- I truly apologize for not taking care of tests comprehensively. This task turned out to be way more time-consuming than I
   anticipated. I spent most of the time on architectures list, deciding on chosen technologies and deploying local
   cluster, I hope it will make up for this incompleteness 😅 Usually I write tests first, but I find that technique
   inefficient for super-fresh projects. If that would be deciding I could write missing tests on weekend.
