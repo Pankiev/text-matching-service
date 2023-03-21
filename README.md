@@ -110,6 +110,7 @@ Run script `deployments/deploy-local-cluster.sh` in order to deploy:
 - A cluster of cassandra (two nodes)
 - A cluster of rabbitmq (two instances)
 
+It could take a few minutes until cassandra cluster is initialized. 
 Application will be available under port 80.
 
 # Using application
