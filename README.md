@@ -127,6 +127,6 @@ under http://localhost/swagger-ui/index.html after deploying the application.
 - In real world we should introduce a mechanism that would resume task processing in case a process that is calculating
   particular task goes down for some reason.
 - Based on the assumption that each step of the text processing algorithm is "heavy" (currently simulated by
-  Thread.sleep()) we can update progress in the database directly each time. If it was not the case we should persist
-  progress at the start of computation, then periodically and then finally at the end. Possibly we could think of
-  centralised cache if better performance is required 
+  Thread.sleep()) we can update progress in the database directly each time without any conditions. If it was not the
+  case we should persist progress at the start of computation, then periodically and then finally at the end. Possibly
+  we could think of centralised cache if even better performance is required. 

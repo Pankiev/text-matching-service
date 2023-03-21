@@ -3,13 +3,11 @@ package com.cdq.textmatching.domain;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 import java.util.stream.IntStream;
 
 @AllArgsConstructor
-@Component
 @Log4j2
 public class TextMatchingTaskMessageHandler {
 

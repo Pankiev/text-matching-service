@@ -1,7 +1,6 @@
 package com.cdq.textmatching.domain;
 
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -10,7 +9,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 
-@Service
 @AllArgsConstructor
 public class TextMatchingService {
 
