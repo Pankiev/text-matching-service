@@ -97,9 +97,9 @@ easier.
 # Deploying
 
 Deploying on production environment would require further configuration. We would have to generate/store credentials
-securely, adjust resources to our needs, configure cassandra cluster etc.  
-It would be better to use kubernetes instead of docker-compose if we want to dynamically scale system horizontally based
-on current demand.
+securely, adjust resources to our needs, configure cassandra cluster, configure rabbitmq consumers concurrency etc.  
+If we want to dynamically scale system horizontally based on current demand it would be better to use kubernetes instead
+of docker-compose
 
 Make sure you have enough RAM space available for docker containers. Run script `deployments/deploy-local-cluster.sh` in
 order to deploy:
@@ -115,9 +115,18 @@ Application will be available under port 80.
 
 There are three endpoints implemented:
 
-- POST /text-matching - starts a new task, example body
+- POST /text-matching - start a new task and retrieves task info along with its id.
 - GET /text-matching/{id} - retrieve task info
 - GET /text-matching - retrieve list of tasks
 
 For exactly how to invoke the endpoints please refer to swagger documentation
-under http://localhost/swagger-ui/index.html after deploying the application. 
+under http://localhost/swagger-ui/index.html after deploying the application.
+
+## Additional notes for reviewer
+
+- In real world we should introduce a mechanism that would resume task processing in case a process that is calculating
+  particular task goes down for some reason.
+- Based on the assumption that each step of the text processing algorithm is "heavy" (currently simulated by
+  Thread.sleep()) we can update progress in the database directly each time. If it was not the case we should persist
+  progress at the start of computation, then periodically and then finally at the end. Possibly we could think of
+  centralised cache if better performance is required 

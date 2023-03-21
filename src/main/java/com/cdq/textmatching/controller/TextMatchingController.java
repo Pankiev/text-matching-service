@@ -14,35 +14,30 @@ import java.util.UUID;
 @RestController
 @RequestMapping(("/text-matching"))
 @AllArgsConstructor
-public class TextMatchingController {
+class TextMatchingController {
 
     private final TextMatchingService textMatchingService;
 
     @GetMapping(value = {"", "/"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<TextMatchingTaskRestDto> getMatchingTasksInfo() {
+    List<TextMatchingTaskResultRestDto> getMatchingTasksInfo() {
         return textMatchingService.findTextMatchingTasks().stream()
-                .map(this::toTextMatchingTaskRestDto)
+                .map(TextMatchingTaskResultRestDto::of)
                 .toList();
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<TextMatchingTaskRestDto> getMatchingTaskInfo(@PathVariable("id") UUID id) {
-        return textMatchingService.findTextMatchingTask(id)
-                .map(this::toTextMatchingTaskRestDto)
+    ResponseEntity<TextMatchingTaskResultRestDto> getMatchingTaskInfo(@PathVariable("id") UUID id) {
+        return textMatchingService.findTextMatchingTaskResult(id)
+                .map(TextMatchingTaskResultRestDto::of)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    private TextMatchingTaskRestDto toTextMatchingTaskRestDto(TextMatchingTask textMatchingTask) {
-        return new TextMatchingTaskRestDto(textMatchingTask.id(), textMatchingTask.status().name(),
-                textMatchingTask.inputText(), textMatchingTask.pattern(), textMatchingTask.taskProgress());
-    }
-
     @PostMapping(value = {"", "/"}, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public TextMatchingTaskRestDto startMatchingTask(@RequestBody StartTextMatchingTaskRestDto startTextMatchingTaskRestDto) {
+    TextMatchingTaskRestDto startMatchingTask(@RequestBody StartTextMatchingTaskRestDto startTextMatchingTaskRestDto) {
         TextMatchingTask textMatchingTask = textMatchingService.startTextMatchingTask(
                 startTextMatchingTaskRestDto.inputText(), startTextMatchingTaskRestDto.pattern());
-        return toTextMatchingTaskRestDto(textMatchingTask);
+        return TextMatchingTaskRestDto.of(textMatchingTask);
     }
 }

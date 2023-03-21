@@ -36,7 +36,7 @@ services:
       CASSANDRA_CLUSTER_NAME: "Text matching app cluster"
       CASSANDRA_DC: datacenter1
       CASSANDRA_ENDPOINT_SNITCH: GossipingPropertyFileSnitch
-      HEAP_NEWSIZE: 1536M
+      HEAP_NEWSIZE: 512M
       MAX_HEAP_SIZE: 1536M
     expose:
       - 9042
@@ -52,7 +52,7 @@ services:
       CASSANDRA_CLUSTER_NAME: "Text matching app cluster"
       CASSANDRA_DC: datacenter1
       CASSANDRA_ENDPOINT_SNITCH: GossipingPropertyFileSnitch
-      HEAP_NEWSIZE: 1536M
+      HEAP_NEWSIZE: 512M
       MAX_HEAP_SIZE: 1536M
     expose:
       - 9042
@@ -87,6 +87,8 @@ services:
     image: rabbitmq:3.11.10-management-alpine
     hostname: rabbitmq-2
     environment:
+      - RABBITMQ_DEFAULT_USER=rabbitMqUser
+      - RABBITMQ_DEFAULT_PASS=rabbitMqPassword
       - RABBITMQ_CONFIG_FILE=/config/rabbitmq
       - RABBITMQ_ERLANG_COOKIE=rabbit-mq-cluster
     expose:

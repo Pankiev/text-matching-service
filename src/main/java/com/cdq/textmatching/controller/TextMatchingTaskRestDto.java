@@ -1,9 +1,21 @@
 package com.cdq.textmatching.controller;
 
-import com.cdq.textmatching.domain.TextMatchingTaskStatus;
+import com.cdq.textmatching.domain.TextMatchingTask;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
-import java.math.BigDecimal;
 import java.util.UUID;
 
-public record TextMatchingTaskRestDto(UUID id, String status, String inputText, String pattern, BigDecimal taskProgress) {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+record TextMatchingTaskRestDto(UUID id, String status, String inputText, String pattern, TextMatchRestDto bestMatch) {
+
+    static TextMatchingTaskRestDto of(TextMatchingTask textMatchingTask) {
+        return new TextMatchingTaskRestDto(
+                textMatchingTask.getId(),
+                textMatchingTask.getStatus().name(),
+                textMatchingTask.getInputText(),
+                textMatchingTask.getPattern(),
+                textMatchingTask.getBestMatch().map(TextMatchRestDto::of).orElse(null)
+        );
+    }
 }
+
