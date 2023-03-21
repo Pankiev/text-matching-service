@@ -14,6 +14,7 @@ services:
     container_name: text-matching-service-1
     image: text-matching-service:latest
     hostname: text-matching-service-1
+    restart: always
     depends_on:
       - rabbitmq-1
       - cassandra-text-matching-seed
@@ -22,6 +23,7 @@ services:
     container_name: text-matching-service-2
     image: text-matching-service:latest
     hostname: text-matching-service-1
+    restart: always
     depends_on:
       - rabbitmq-1
       - cassandra-text-matching-seed
@@ -73,6 +75,7 @@ services:
     container_name: "rabbitmq-1"
     image: rabbitmq:3.11.10-management-alpine
     hostname: rabbitmq-1
+    restart: always
     environment:
       - RABBITMQ_DEFAULT_USER=rabbitMqUser
       - RABBITMQ_DEFAULT_PASS=rabbitMqPassword
@@ -86,6 +89,7 @@ services:
     container_name: "rabbitmq-2"
     image: rabbitmq:3.11.10-management-alpine
     hostname: rabbitmq-2
+    restart: always
     environment:
       - RABBITMQ_DEFAULT_USER=rabbitMqUser
       - RABBITMQ_DEFAULT_PASS=rabbitMqPassword

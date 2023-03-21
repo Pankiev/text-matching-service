@@ -94,14 +94,14 @@ to start with for most real-world use cases and since it does not include
 websockets which could be sometimes incompatible with currently existing company's infrastructure, deployment should be
 easier.
 
-# Deploying
+# Running/Deploying
 
 Deploying on production environment would require further configuration. We would have to generate/store credentials
 securely, adjust resources to our needs, configure cassandra cluster, configure rabbitmq consumers concurrency etc.  
 If we want to dynamically scale system horizontally based on current demand it would be better to use kubernetes instead
 of docker-compose
 
-Make sure you have enough RAM space available for docker containers. Run script `deployments/deploy-local-cluster.sh` in
+Make sure the 80 port is opened, you have running docker engine and enough RAM space (available for docker containers. Run script `deployments/deploy-local-cluster.sh` in
 order to deploy:
 
 - A nginx proxy/load balancer
