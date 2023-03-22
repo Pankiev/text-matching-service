@@ -34,8 +34,8 @@ the beginning.
     2. Using message brokers
        ![3.2 - with message brokers](possibleArchitectures/3.2-with-message-brokers.png)<br/>
        Instead of adding web sockets to architecture described in point 3. we could use message brokers. We rather don't
-       task right away, but we
-       can send messages to message broker. Our text-matching service will subscribe to message broker and execute tasks
+       process task right away, but we send messages to message broker. Our text-matching service will subscribe to
+       message broker and execute tasks
        upon receiving the messages.
        This improves availability in case of sudden traffic load increase and decreases chance of unsuccessful requests
        happening. Message brokers
@@ -87,7 +87,8 @@ the beginning.
 
 ## Chosen architecture
 
-Because of limited information about requirements regarding throughput and availability I did not decide to implement a service compatible
+Because of limited information about requirements regarding throughput and availability I did not decide to implement a
+service compatible
 with most complex architecture. In this
 project I chose architecture described in 3.ii. It's compatible with task description and in my opinion it's good enough
 to start with for most real-world use cases and since it does not include
@@ -101,7 +102,8 @@ securely, adjust resources to our needs, configure cassandra cluster, configure 
 If we want to dynamically scale system horizontally based on current demand it would be better to use kubernetes instead
 of docker-compose
 
-Make sure the 80 port is opened, you have running docker engine and enough RAM space (about 5GB, mostly consumed by cassandra nodes) available for docker
+Make sure the 80 port is opened, you have running docker engine and enough RAM space (about 5GB, mostly consumed by
+cassandra nodes) available for docker
 containers.
 Run script `deployments/deploy-local-cluster.sh` in order to deploy:
 
@@ -110,7 +112,7 @@ Run script `deployments/deploy-local-cluster.sh` in order to deploy:
 - A cluster of cassandra (two nodes)
 - A cluster of rabbitmq (two instances)
 
-It could take a few minutes until cassandra cluster is initialized. 
+It could take a few minutes until cassandra cluster is initialized.
 Application will be available under port 80.
 
 # Using application
@@ -126,7 +128,8 @@ under http://localhost/swagger-ui/index.html after deploying the application.
 
 ## Note for a reviewer
 
-- I truly apologize for not taking care of tests comprehensively. This task turned out to be way more time-consuming than I
+- I truly apologize for not taking care of tests comprehensively. This task turned out to be way more time-consuming
+  than I
   anticipated. I spent most of the time on architectures list, deciding on chosen technologies and deploying local
   cluster, I hope it will make up for this incompleteness 😅 Usually I write tests first, but I find that technique
   inefficient for super-fresh projects. If that would be deciding I could write missing tests on weekend.
